@@ -1,7 +1,7 @@
 class Obstacle {
   // Member Varibales
   float x, y, w, h, speed, health;
-  PImage iTankW, iTankA, iTanks, iTankd;
+  PImage obs1;
   char idir;
 
   //constructor
@@ -12,16 +12,20 @@ class Obstacle {
     this. h = h;
     this. speed = speed;
     this. health = health;
-    indir = 'w';
+    idir = 'w';
+    obs1 = loadImage("Obsicle.png");
   }
 
   void display() {
     fill(128);
-    rectMode(CENTER); 
-    rect(x, y, w, h);
+    imageMode(CENTER);
+    image(obs1, x, y);
   }
 
   void move() {
     x=x+speed;
+    if (x>width) {
+      x=0;
+    }
   }
 }
