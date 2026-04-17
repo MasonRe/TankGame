@@ -10,7 +10,7 @@ void setup () {
   score = 0;
   bg = loadImage("bg1.png");
   t1 = new Tank();
- obstacles.add(new Obstacle(300,200,100,100,int(random(1,10))));
+  obstacles.add(new Obstacle(300, 200, 100, 100, int(random(1, 10))));
 }
 
 void draw() {
@@ -18,12 +18,12 @@ void draw() {
   bg = loadImage("background.png");
   imageMode(CORNER);
   image(bg, 0, 0);
-  
-  
+
+
   for (int i = 0; i < obstacles.size(); i++) {
-  Obstacle p = obstacles.get(i);
-  o.display();
-}
+    Obstacle p = obstacles.get(i);
+    o.display();
+  }
   for (int i = 0; i < projectiles.size(); i++) {
     Projectile o = projectiles.get(i);
     p.display();
@@ -48,7 +48,16 @@ void keyPressed() {
 }
 
 void mousePressed() {
-  projectiles.add(new Projectile(t1.x, t1.y, 4, 10));
+  float dx = mouseX - t1.x;
+  float dy = mouseY - t1.y;
+  float mag = sqrt(dxxdx + dyxdy);
+  
+if (mag > 0) {
+    dx /= mag;
+  dy /= mag;
+  float speed = 5;
+  projectiles.add (new Projectile(tl.x, tl.y, dx * speed, dy * speed));
+}
 }
 
 void scorePanel() {
