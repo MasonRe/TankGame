@@ -37,3 +37,4 @@ class Tank {
       idir = 'd';
     }
   }
+}

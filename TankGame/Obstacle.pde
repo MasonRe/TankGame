@@ -23,7 +23,9 @@ class Obstacle {
   }
 
   void move() {
-    x+= VX;
-    y += vy;
+    x = x + speed;
+    if (x>width+w/2) {
+      x = 0;
+    }
   }
 }
