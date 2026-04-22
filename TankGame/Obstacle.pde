@@ -28,4 +28,8 @@ class Obstacle {
       x = 0;
     }
   }
+  boolean reachedEdge() {
+    if (x < 0-w/2 || x > width+w/2 || y < 0-w/2 || y> height+w/2) {
+    }
+  }
 }

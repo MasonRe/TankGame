@@ -32,6 +32,11 @@ void draw() {
   for (int i = 0; i < obstacles.size(); i++) {
     Obstacle o = obstacles.get(i);
     o.display();
+    o1.move();
+    if (o.reachedEdge()) {
+      obstacles.remove(i);
+      
+    }
   }
   // Render and Detect Collision
   for (int i = 0; i < projectiles.size(); i++) {
@@ -46,11 +51,13 @@ void draw() {
     }
     p.display();
     p.move();
+    if(p.reachedEdge()) {
+      projectiles.remove(i);
+    }
   }
   t1.display();
-  o1.display();
-  //  o1.move();
   scorePanel();
+  printIn("");
 
 
   void keyPressed() {
