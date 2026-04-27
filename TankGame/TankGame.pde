@@ -2,10 +2,11 @@
 Tank t1;
 ArrayList<Projectile> projectiles = new ArrayList<Projectile>();
 ArrayList<Obstacle> obstacles = new ArrayList<Obstacle>();
+ArrayList<PowerUp> powerups = new ArrayList<PowerUp>();
 PImage bg;
 float mag = 100;
 int score;
-Timer objTimer;
+Timer objTimer, puTimer;
 
 void setup () {
   size(500, 500);
@@ -14,9 +15,18 @@ void setup () {
   t1 = new Tank();
   objTimer = new Timer(1000);
   objTimer.start();
+  puTimer = new Timer (5000);
+  puTimer.start();
   //obstacles.add(new Obstacle(300, 200, 100, 100, int(random(1, 10))));
 }
-
+  for (int i = 0; i < powerups.size(); i++) {
+    PowerUp pu = powerups.get(i);
+    pu.display();
+    pu.move();
+    if (pu.reachedEdge()) {
+      powerups.remove(i);
+    }
+  }
 void draw() {
   //background("background.png");
   bg = loadImage("background.png");
@@ -28,14 +38,17 @@ void draw() {
     objTimer.start();
   }
 
+  if ((puTimer.isFinished())) {
+    powerups.add(new PowerUp(100, 100));
+    puTimer.start();
+  }
 
   for (int i = 0; i < obstacles.size(); i++) {
     Obstacle o = obstacles.get(i);
-    o.display();
+    o1.display();
     o1.move();
     if (o.reachedEdge()) {
       obstacles.remove(i);
-      
     }
   }
   // Render and Detect Collision
@@ -51,7 +64,7 @@ void draw() {
     }
     p.display();
     p.move();
-    if(p.reachedEdge()) {
+    if (p.reachedEdge()) {
       projectiles.remove(i);
     }
   }

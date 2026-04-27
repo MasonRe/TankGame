@@ -1,7 +1,7 @@
 class Tank {
   // Member Varibales
   float x, y, w, h, speed, health;
-  PImage iTankW, iTankA, iTankS, iTankD;
+  PImage iTankW;
   char idir;
 
   //constructor
