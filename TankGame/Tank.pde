@@ -3,6 +3,7 @@ class Tank {
   float x, y, w, h, speed, health;
   PImage iTankW;
   char idir;
+  //int turretCount;
 
   //constructor
   Tank() {
@@ -12,8 +13,8 @@ class Tank {
     h = 100;
     speed = 10.0;
     health = 3.0;
-    idir = 'w';
     iTankW = loadImage("tank.png");
+    idir = 'w';
   }
 
   void display() {

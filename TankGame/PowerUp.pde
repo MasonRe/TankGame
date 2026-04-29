@@ -1,40 +1,56 @@
 class PowerUp {
-  // Member Varibales
+
   float x, y, w, h, speed;
-  PImage obs1;
-  char idir;
+  char type; // 'h' = health, 's' = speed
 
-  //constructor
-  PowerUp(float w, float h) {
+  PImage img;
 
-    this. w = w;
-    this. h = h;
+  // constructor
+  PowerUp() {
+   w= 100;
+   h= 100;
+
     speed = 5;
-    
-    if(int(random(4))==2) {
-      type = 'h';
-      x = random(width);
-      y= -100;
-    }else if
 
-    idir = 'w';
-    obs1 = loadImage("Power.png");
+    // random type
+    if (int(random(1))==2) {
+      type = 'h';
+      x= random(width);
+      y = -100
+    } else if (int(random(3))==1) {
+      type = 's';
+    }
+
+    img = loadImage("Power.png");
   }
 
   void display() {
-if(type == 'h') {
-  fill(0,200,0);
-  ellipse(x,y,w,h);
-  fill(2555);
-  text(health);
-}
+    if(type == 'h'){
+      fill(0,200,0);
+      ellipse(x,y,w,h,speed);
+
   }
 
   void move() {
- y = y +speed;
+    y += speed;
   }
+
   boolean reachedEdge() {
-return || x > width+w/2 || y < 0-w/2 || y> height+w/2) {
+    return (y > height + h);
+  }
+
+  // collision with tank
+  boolean intersect(Tank t) {
+    float d = dist(x, y, t.x, t.y);
+    return d < (w/2 + t.w/2);
+  }
+
+  // apply benefit
+  void applyEffect(Tank t) {
+    if (type == 'h') {
+      t.health += 20;   // health boost
+    } else if (type == 's') {
+      t.speed += 1;     // speed boost
     }
   }
 }
