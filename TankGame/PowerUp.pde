@@ -7,50 +7,60 @@ class PowerUp {
 
   // constructor
   PowerUp() {
-   w= 100;
-   h= 100;
-
+    w= 100;
+    h= 100;
     speed = 5;
-
-    // random type
-    if (int(random(1))==2) {
+    x= random(width);
+    y = -100;
+    if (int(random(4))==2) {
       type = 'h';
-      x= random(width);
-      y = -100
     } else if (int(random(3))==1) {
-      type = 's';
+      type = 't';
+    } else {
+      type = 'a';
     }
-
-    img = loadImage("Power.png");
   }
 
-  void display() {
-    if(type == 'h'){
-      fill(0,200,0);
-      ellipse(x,y,w,h,speed);
+  //img = loadImage("Power.png");
 
+
+  void display() {
+    if (type == 'h') {
+      fill(0, 200, 0);
+      ellipse(x, y, w, h);
+      fill(255);
+      textAlign(CENTER, CENTER);
+      text("Health", x, y);
+    } else if (type == 't') {
+      fill(0, 0, 200);
+      ellipse (x, y, w, h);
+      fill(255);
+      textAlign(CENTER, CENTER);
+      text("Turret", x, y);
+    } else {
+      fill(200, 0, 0);
+      ellipse(x, y, w, h);
+      fill(255);
+      textAlign(CENTER, CENTER);
+      text("Ammo",x,y);
+    }
   }
 
   void move() {
-    y += speed;
+    y = y + speed;
   }
 
   boolean reachedEdge() {
-    return (y > height + h);
+    return x>= width+150 || x <= -150 ||y>height + 150 || y < -150;
   }
 
   // collision with tank
   boolean intersect(Tank t) {
-    float d = dist(x, y, t.x, t.y);
-    return d < (w/2 + t.w/2);
-  }
-
-  // apply benefit
-  void applyEffect(Tank t) {
-    if (type == 'h') {
-      t.health += 20;   // health boost
-    } else if (type == 's') {
-      t.speed += 1;     // speed boost
+    float distance = dist(x, y, t.x, t.y);
+    if (distance < 100) {
+      return true;
+    } else {
+      return false;
     }
   }
 }

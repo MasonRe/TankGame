@@ -33,8 +33,8 @@ class Projectile {
       return false;
     }
   }
-  //boolean reachedEdge() {
-    //if (x < 0-w/2 || x > width+w/2 || y < 0-w/2 || y> height+w/2) {
-  //  }
-  //}
+  boolean reachedEdge() {
+    return x >= width+150 || x<= -150 || y> height + 150 || y < -150;
+
+}
 }
