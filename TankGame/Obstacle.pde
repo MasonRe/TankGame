@@ -1,18 +1,32 @@
 class Obstacle {
-  // Member Varibales
+  // Member Variable
   float x, y, w, h, speed, health;
   PImage obs1;
   char idir;
 
-  //constructor
-  Obstacle(float x, float y, float w, float h, float speed, float health ) {
-    this.x = x;
-    this. y = y;
-    this. w = w;
-    this. h = h;
-    this. speed = speed;
-    this. health = health;
-    idir = 'w';
+  // Constructor
+  Obstacle(float w, float h, float speed, float health) {
+    this.w = w;
+    this.h = h;
+    this.speed = speed;
+    this.health = health;
+    if (int(random(4))==2) {
+      idir = 'w';
+      x = random(width);
+      y = height + 100;
+    } else if (int(random(3))==1) {
+      idir = 'd';
+      x = -100;
+      y = random(height);
+    } else if (int(random(2))==1) {
+      idir = 'a';
+      x = width+100;
+      y = random(height);
+    } else {
+      idir = 's';
+      x = random(width);
+      y = -100;
+    }
     obs1 = loadImage("Obsicle.png");
   }
 
@@ -23,10 +37,21 @@ class Obstacle {
   }
 
   void move() {
- 
+    switch(idir) {
+    case 'w':
+      y = y - speed;
+      break;
+    case 'a':
+      x = x - speed;
+      break;
+    case 's':
+      y = y + speed;
+      break;
+    case 'd':
+      x = x + speed;
+    }
   }
   boolean reachedEdge() {
-    return x >= width+150 || x<= -150 ||y> height + 150|| y<-150;
-
+    return x >= width+150 || x <= -150 || y > height + 150 || y < -150;
   }
 }

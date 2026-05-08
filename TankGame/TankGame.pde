@@ -1,119 +1,201 @@
-// Mason Rees | April 1st | Tank Game
-PImage bg1;
+// 1 April 2026 | TankGame | Mason Rees
+
 Tank t1;
-Heart h1;
-ArrayList<PowerUp> powerups;
-ArrayList<Projectile> projectiles;
-ArrayList<Obstacle> obstacles;
+
+ArrayList<Projectile> projectiles = new ArrayList<Projectile>();
+ArrayList<Obstacle> obstacles = new ArrayList<Obstacle>();
+ArrayList<PowerUp> powerups = new ArrayList<PowerUp>();
+
+PImage bg;
+
+int score;
+
+Timer objTimer, puTimer;
 
 void setup() {
   size(500, 500);
-  bg1 = loadImage("bg1.png");
-  t1 = new Tank();
-  powerups = new ArrayList<PowerUp>();
-  projectiles = new ArrayList<Projectile>();
-  obstacles = new ArrayList<Obstacle>();
-  h1 = new Heart(random(50, 450), random(50, 450), 40, 40, 20);
 
-  for (int i = 0; i < 5; i++) {
-    obstacles.add(new Obstacle(random(50, 450), random(50, 450)));
-  }
+  score = 0;
+
+  bg = loadImage("bg1.png");
+
+  t1 = new Tank();
+
+  objTimer = new Timer(1000);
+  objTimer.start();
+
+  puTimer = new Timer(5000);
+  puTimer.start();
 }
 
 void draw() {
-  if (bg1 != null) background(bg1);
-  else background(50);
+  background(127);
 
-  if (t1.health > 0) {
-    t1.display();
+  imageMode(CORNER);
+  image(bg, 0, 0);
 
-   
-    if (frameCount % 40 == 0) {
-      powerups.add(new PowerUp(random(width), -50, 60, 60, 20, random(2, 5)));
-    }
+  // SPAWN OBSTACLES
+  if (objTimer.isFinished()) {
+    obstacles.add(new Obstacle(100, 100, int(random(1, 10)), 10));
 
-   
-    if (frameCount % 600 == 0) {
-      obstacles.add(new Obstacle(random(50, 450), random(50, 450)));
-    }
-
-   
-    for (int i = projectiles.size() - 1; i >= 0; i--) {
-      Projectile p = projectiles.get(i);
-      p.move();
-      p.display();
-
-      boolean ProjectileRemoved = false;
-      for (int j = powerups.size() - 1; j >= 0; j--) {
-        if (dist(pu.x, pu.y, powerups.get(j).x, powerups.get(j).y) < 30) {
-          powerups.remove(j);
-          ProjectileRemoved = true;
-          break;
-        }
-      }
-
-      if (!ProjectileRemoved) {
-        for (int k = obstacles.size() - 1; k >= 0; k--) {
-          if (dist(p.x, p.y, obstacles.get(k).x, obstacles.get(k).y) < 25) {
-            obstacles.remove(k);
-            ProjectileRemoved = true;
-            break;
-          }
-        }
-      }
-
-      if (ProjectileRemoved || p.y < 0 || p.y > height || p.x < 0 || p.x > width) {
-        projectiles.remove(i);
-      }
-    }
-
-   
-    for (int i = powerups.size() - 1; i >= 0; i--) {
-      PowerUp pu = powerups.get(i);
-      pu.move();
-      pu.display(t1.PowerUpImg);
-      if (t1.hitPowerUp(pu)) {
-        t1.health -= pu.val;
-        powerups.remove(i);
-      } else if (pu.y > height + 50) {
-        powerups.remove(i);
-      }
-    }
-
-   
-    for (Obstacle obs : obstacles) {
-      obs.display(wallImg);
-      if (dist(t1.x, t1.y, obs.x, obs.y) < (t1.w/2 + obs.w/2 - 10)) {
-        if (t1.idir == 'w') t1.y += t1.speed;
-        if (t1.idir == 's') t1.y -= t1.speed;
-        if (t1.idir == 'a') t1.x += t1.speed;
-        if (t1.idir == 'd') t1.x -= t1.speed;
-      }
-    }
-
-   
-    h1.display(t1.heartImg);
-    if (t1.hitHeart(h1)) {
-      t1.health += h1.val;
-      h1.reset();
-    }
-
-    fill(255);
-    textSize(20);
-    text("Health: " + (int)t1.health, 20, 30);
-  } else {
-    background(0);
-    fill(255, 0, 0);
-    textAlign(CENTER);
-    textSize(40);
-    text("GAME OVER", width/2, height/2);
+    objTimer.start();
   }
+
+  // SPAWN POWERUPS
+  if (puTimer.isFinished()) {
+    powerups.add(new PowerUp());
+
+    puTimer.start();
+  }
+
+  // POWERUPS
+  for (int i = 0; i < powerups.size(); i++) {
+    PowerUp pu = powerups.get(i);
+
+    pu.display();
+    pu.move();
+
+    // remove if off screen
+    if (pu.reachedEdge()) {
+      powerups.remove(i);
+      i--;
+
+      continue;
+    }
+
+    // collision with tank
+    if (pu.intersect(t1)) {
+
+      // HEALTH
+      if (pu.type == 'h') {
+        t1.health = t1.health + 100;
+      }
+
+      // AMMO
+      else if (pu.type == 'a') {
+        t1.laserCount = t1.laserCount + 100;
+      }
+
+      // EXTRA TURRET
+      else if (pu.type == 't') {
+        t1.turretCount = t1.turretCount + 1;
+      }
+
+      powerups.remove(i);
+      i--;
+    }
+  }
+
+  // OBSTACLES
+  for (int i = 0; i < obstacles.size(); i++) {
+    Obstacle o = obstacles.get(i);
+
+    o.display();
+    o.move();
+
+    if (o.reachedEdge()) {
+      obstacles.remove(i);
+      i--;
+    }
+
+    // tank collision
+    if (t1.intersect(o)) {
+      t1.health = t1.health - 1;
+    }
+  }
+
+  // PROJECTILES
+  for (int i = 0; i < projectiles.size(); i++) {
+    Projectile p = projectiles.get(i);
+
+    for (int j = 0; j < obstacles.size(); j++) {
+      Obstacle o = obstacles.get(j);
+
+      if (p.intersect(o)) {
+        score = score + 100;
+
+        projectiles.remove(i);
+        obstacles.remove(j);
+
+        i--;
+
+        break;
+      }
+    }
+
+    if (i >= 0 && i < projectiles.size()) {
+      p.display();
+      p.move();
+
+      if (p.reachedEdge()) {
+        projectiles.remove(i);
+        i--;
+      }
+    }
+  }
+
+  t1.display();
+ 
+  scorePanel();
+
+  println("Objects in Memory: " + obstacles.size());
+  println("Projectiles in Memory: " + projectiles.size());
 }
 
 void keyPressed() {
-  t1.move(key);
+  if (key == 'w') {
+    t1.move('w');
+
+  } else if (key == 's') {
+    t1.move('s');
+
+  } else if (key == 'd') {
+    t1.move('d');
+
+  } else if (key == 'a') {
+    t1.move('a');
+  }
 }
 
-void mousePressed(char dir) {
-  projectiles.add(new Projectile(t1.x, t1.y, t1.dir));
+void mousePressed() {
+  // direction toward mouse
+  float dx = mouseX - t1.x;
+  float dy = mouseY - t1.y;
+  float mag = sqrt(dx * dx + dy * dy);
+  if (mag > 0) {
+    dx /= mag;
+    dy /= mag;
+    float speed = 5;
+    
+    if (t1.turretCount == 1 && t1.laserCount > 0) {
+      projectiles.add(
+        new Projectile(t1.x, t1.y, dx * speed, dy * speed)
+      );
+      t1.laserCount--;
+    }
+
+    else if (t1.turretCount >= 2 && t1.laserCount > 1) {
+      projectiles.add(
+        new Projectile(t1.x - 20, t1.y, dx * speed, dy * speed)
+      );
+      projectiles.add(
+        new Projectile(t1.x + 20, t1.y, dx * speed, dy * speed)
+      );
+      t1.laserCount = t1.laserCount - 2;
+    }
+  }
+  println(projectiles.size());
+}
+
+void scorePanel() {
+  fill(127, 200);
+  rectMode(CENTER);
+  noStroke();
+  rect(width/2, 15, width, 30);
+  fill(255);
+  textSize(18);
+  textAlign(CENTER);
+  text("Score: " + score, width/2, 25);
+  text("Health: " + t1.health, width/2 - 150, 25);
+  text("Ammo: " + t1.laserCount, width/2 + 150, 25);
 }
