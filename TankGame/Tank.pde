@@ -20,9 +20,16 @@ class Tank {
   }
 
   void display() {
-    fill(128);
     rectMode(CENTER);
-    rect(x, y, w, h);
+     if(idir == 'w') {
+      image(iTankW,x,y);
+  } else if (idir == 'a'){
+    image(iTankW,x,y);
+  }else if (idir == 's'){
+    image(iTankW,x,y);
+  }else if (idir == 'd'){
+    image(iTankW,x,y);
+  }
   }
 
   void move(char dir) {
