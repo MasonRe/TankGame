@@ -15,10 +15,10 @@ void setup() {
   score = 0;
   bg = loadImage("bg1.png");
   startScreen = loadImage("startScreen.png");
-   play = false;
+  play = false;
   endScreen = loadImage("GameOver.png");
- play = true;
-    t1 = new Tank();
+
+  t1 = new Tank();
   objTimer = new Timer(1000);
   objTimer.start();
 
@@ -201,15 +201,12 @@ void scorePanel() {
 
 void startScreen() {
   imageMode(CORNER);
-  image(startScreen,0,0);
-  if(mousePressed) {
+  image(startScreen, 0, 0);
+  if (mousePressed) {
     play = true;
   }
 }
 void GameOver() {
   imageMode(CORNER);
-  image(startScreen,0,0);
-  if(mousePressed) {
-    play = false;
-  }
+  image(startScreen, 0, 0);
 }
